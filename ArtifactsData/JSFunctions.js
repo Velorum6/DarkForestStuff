@@ -45,3 +45,11 @@ for (var a of d.data.artifacts){
 }
 
 console.log(destroyedArtifacts)
+
+//This function just counts the number of each type of artifacts that got destroyed in a new Array
+var dArtifacts = {};
+for (var a of destroyedArtifacts) {
+    if (!dArtifacts[a.artifactType]) dArtifacts[a.artifactType] = 0;
+    dArtifacts[a.artifactType]++;
+}
+console.log(dArtifacts)
