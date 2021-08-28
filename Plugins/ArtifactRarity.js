@@ -1,4 +1,4 @@
-//A plugin that calls directly, functions made by modukon
+//A plugin that calls info about how many artifacts are minted & destroyed from the subgraph directly, functions made by modukon
 
 var GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/darkforest-eth/dark-forest-v06-round-3";
 
