@@ -76,26 +76,6 @@ async function logArtifactInfoForRarity(rarity) {
 	console.log("artifactTypes", artifactTypes);
 	console.log("destroyedArtifactTypes", destroyedArtifactTypes);
 	console.log(artifacts.length+" artifacts, "+destroyedArtifactCount+" destroyed, "+notDestroyedArtifactCount+" not destroyed");
-	return "artifactTypes", artifactTypes
 }
 
-class Plugin {
-
-    constructor() {}
-
-    async render(div) {
-        div.style.width = '100px';
-        div.style.height = '100px';
-        const myButton = document.createElement('button');
-        myButton.innerText = 'Show Artifacts';
-        myButton.addEventListener('click', () => {
-            logArtifactInfoForRarity("MYTHIC");
-        });
-        div.appendChild(myButton);
-    }
-    
-    
-    destroy() { }
-}
-
-export default Plugin;
+logArtifactInfoForRarity("MYTHIC");
