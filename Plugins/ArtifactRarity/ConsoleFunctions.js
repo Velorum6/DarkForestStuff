@@ -1,6 +1,6 @@
 //A plugin that calls info about how many artifacts are minted & destroyed of an specified rarity from the subgraph directly, functions made by modukon
 
-var GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/darkforest-eth/dark-forest-v06-round-3";
+var GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/darkforest-eth/dark-forest-v06-round-4";
 
 async function getGraphQLData(graphApiUrl, query) {
 	const response = await fetch(graphApiUrl, {
