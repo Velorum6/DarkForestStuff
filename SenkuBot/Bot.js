@@ -32,17 +32,14 @@ function getArtifactQueryStr(rarity, lastId) {
 async function getArtifacts(rarity) {
 	let artifacts = [];
 	let lastId = 0;
-	console.log("downloading "+rarity+" artifacts from graph...");
 	for (let i = 0; ; i++) {
 		const graphQuery = getArtifactQueryStr(rarity, lastId);
 		const graphResponse = await getGraphQLData(GRAPH_API_URL, graphQuery);
 		let arr = graphResponse.data.artifacts;
 		if (arr.length === 0) break;
-		console.log("downloaded "+arr.length+" artifacts");
 		lastId = arr[arr.length-1].id;
 		artifacts.push(...arr);
 	}
-	console.log("download complete! "+artifacts.length+" "+rarity+" artifacts");
 	return artifacts;
 };
 
@@ -75,9 +72,6 @@ async function logArtifactInfoForRarity(rarity) {
 		} else notDestroyedArtifactCount++;
 		
 	}
-	console.log("artifactTypes", artifactTypes);
-	console.log("destroyedArtifactTypes", destroyedArtifactTypes);
-	console.log(artifacts.length+" artifacts, "+destroyedArtifactCount+" destroyed, "+notDestroyedArtifactCount+" not destroyed");
   return notDestroyedArtifactCount;
 }
 
@@ -100,9 +94,6 @@ async function logArtifactInfoForRarityAndType(rarity) {
 		} else notDestroyedArtifactCount++;
 		
 	}
-	console.log("artifactTypes", artifactTypes);
-	console.log("destroyedArtifactTypes", destroyedArtifactTypes);
-	console.log(artifacts.length+" artifacts, "+destroyedArtifactCount+" destroyed, "+notDestroyedArtifactCount+" not destroyed");
   return artifactTypes;
 }
 
@@ -117,31 +108,41 @@ client.on("messageCreate", async message => {
     var artifacts = await getArtifacts("MYTHIC");
     var notDestroyedArtifactCount = await logArtifactInfoForRarity("MYTHIC")
     var artifactTypes = await logArtifactInfoForRarityAndType("MYTHIC")
-    message.channel.send("There are " + artifacts.length.toString() + " Mythic artifacts discovered, " + notDestroyedArtifactCount.toString() + " of them are still not destroyed.\nBlack Domains: " + artifactTypes["BLACKDOMAIN"].toString() + "\nPlanetary Shields: " + artifactTypes["PLANETARYSHIELD"].toString() + "\nColossus: " + artifactTypes["COLOSSUS"].toString() + "\nPyramids: " + artifactTypes["PYRAMID"].toString() + "\nSpaceships: " + artifactTypes["SPACESHIP"].toString() + "\nPhotoid Cannons: " + artifactTypes["PHOTOIDCANNON"].toString())
+    var number = (notDestroyedArtifactCount / artifacts.length) * 100
+    console.log(number)
+    message.channel.send("There are " + artifacts.length.toString() + " Mythic artifacts discovered, " + notDestroyedArtifactCount.toString() + " (" + number.toFixed(2) +"%) of them are still not destroyed.\nBlack Domains: " + artifactTypes["BLACKDOMAIN"].toString() + "\nPlanetary Shields: " + artifactTypes["PLANETARYSHIELD"].toString() + "\nColossus: " + artifactTypes["COLOSSUS"].toString() + "\nPyramids: " + artifactTypes["PYRAMID"].toString() + "\nSpaceships: " + artifactTypes["SPACESHIP"].toString() + "\nPhotoid Cannons: " + artifactTypes["PHOTOIDCANNON"].toString())
   }
   if (message.content === '!Legendary') {
     var artifacts = await getArtifacts("LEGENDARY");
     var notDestroyedArtifactCount = await logArtifactInfoForRarity("LEGENDARY")
     var artifactTypes = await logArtifactInfoForRarityAndType("LEGENDARY")
-    message.channel.send("There are " + artifacts.length.toString() + " Legendary artifacts discovered, " + notDestroyedArtifactCount.toString() + " of them are still not destroyed.\nBlack Domains: " + artifactTypes["BLACKDOMAIN"].toString() + "\nPlanetary Shields: " + artifactTypes["PLANETARYSHIELD"].toString() + "\nColossus: " + artifactTypes["COLOSSUS"].toString() + "\nPyramids: " + artifactTypes["PYRAMID"].toString() + "\nSpaceships: " + artifactTypes["SPACESHIP"].toString() + "\nWormholes: " + artifactTypes["WORMHOLE"].toString() + "\nBloom Filters: " + artifactTypes["BLOOMFILTER"].toString() + "\nPhotoid Cannons: " + artifactTypes["PHOTOIDCANNON"].toString())
+    var number = (notDestroyedArtifactCount / artifacts.length) * 100
+    console.log(number)
+    message.channel.send("There are " + artifacts.length.toString() + " Legendary artifacts discovered, " + notDestroyedArtifactCount.toString() + " (" + number.toFixed(2) +"%) of them are still not destroyed.\nBlack Domains: " + artifactTypes["BLACKDOMAIN"].toString() + "\nPlanetary Shields: " + artifactTypes["PLANETARYSHIELD"].toString() + "\nColossus: " + artifactTypes["COLOSSUS"].toString() + "\nPyramids: " + artifactTypes["PYRAMID"].toString() + "\nSpaceships: " + artifactTypes["SPACESHIP"].toString() + "\nWormholes: " + artifactTypes["WORMHOLE"].toString() + "\nBloom Filters: " + artifactTypes["BLOOMFILTER"].toString() + "\nPhotoid Cannons: " + artifactTypes["PHOTOIDCANNON"].toString())
   }
   if (message.content === '!Epic') {
     var artifacts = await getArtifacts("EPIC");
     var notDestroyedArtifactCount = await logArtifactInfoForRarity("EPIC")
     var artifactTypes = await logArtifactInfoForRarityAndType("EPIC")
-    message.channel.send("There are " + artifacts.length.toString() + " Epic artifacts discovered, " + notDestroyedArtifactCount.toString() + " of them are still not destroyed.\nBlack Domains: " + artifactTypes["BLACKDOMAIN"].toString() + "\nPlanetary Shields: " + artifactTypes["PLANETARYSHIELD"].toString() + "\nColossus: " + artifactTypes["COLOSSUS"].toString() + "\nPyramids: " + artifactTypes["PYRAMID"].toString() + "\nSpaceships: " + artifactTypes["SPACESHIP"].toString() + "\nWormholes: " + artifactTypes["WORMHOLE"].toString() + "\nBloom Filters: " + artifactTypes["BLOOMFILTER"].toString() + "\nPhotoid Cannons: " + artifactTypes["PHOTOIDCANNON"].toString())
+    var number = (notDestroyedArtifactCount / artifacts.length) * 100
+    console.log(number)
+    message.channel.send("There are " + artifacts.length.toString() + " Epic artifacts discovered, " + notDestroyedArtifactCount.toString() + " (" + number.toFixed(2) +"%) of them are still not destroyed.\nBlack Domains: " + artifactTypes["BLACKDOMAIN"].toString() + "\nPlanetary Shields: " + artifactTypes["PLANETARYSHIELD"].toString() + "\nColossus: " + artifactTypes["COLOSSUS"].toString() + "\nPyramids: " + artifactTypes["PYRAMID"].toString() + "\nSpaceships: " + artifactTypes["SPACESHIP"].toString() + "\nWormholes: " + artifactTypes["WORMHOLE"].toString() + "\nBloom Filters: " + artifactTypes["BLOOMFILTER"].toString() + "\nPhotoid Cannons: " + artifactTypes["PHOTOIDCANNON"].toString())
   }
   if (message.content === '!Rare') {
     var artifacts = await getArtifacts("RARE");
     var notDestroyedArtifactCount = await logArtifactInfoForRarity("RARE")
     var artifactTypes = await logArtifactInfoForRarityAndType("RARE")
-    message.channel.send("There are " + artifacts.length.toString() + " Rare artifacts discovered, " + notDestroyedArtifactCount.toString() + " of them are still not destroyed.\nBlack Domains: " + artifactTypes["BLACKDOMAIN"].toString() + "\nPlanetary Shields: " + artifactTypes["PLANETARYSHIELD"].toString() + "\nColossus: " + artifactTypes["COLOSSUS"].toString() + "\nPyramids: " + artifactTypes["PYRAMID"].toString() + "\nSpaceships: " + artifactTypes["SPACESHIP"].toString() + "\nWormholes: " + artifactTypes["WORMHOLE"].toString() + "\nBloom Filters: " + artifactTypes["BLOOMFILTER"].toString() + "\nPhotoid Cannons: " + artifactTypes["PHOTOIDCANNON"].toString())
+    var number = (notDestroyedArtifactCount / artifacts.length) * 100
+    console.log(number)
+    message.channel.send("There are " + artifacts.length.toString() + " Rare artifacts discovered, " + notDestroyedArtifactCount.toString() + " (" + number.toFixed(2) +"%) of them are still not destroyed.\nBlack Domains: " + artifactTypes["BLACKDOMAIN"].toString() + "\nPlanetary Shields: " + artifactTypes["PLANETARYSHIELD"].toString() + "\nColossus: " + artifactTypes["COLOSSUS"].toString() + "\nPyramids: " + artifactTypes["PYRAMID"].toString() + "\nSpaceships: " + artifactTypes["SPACESHIP"].toString() + "\nWormholes: " + artifactTypes["WORMHOLE"].toString() + "\nBloom Filters: " + artifactTypes["BLOOMFILTER"].toString() + "\nPhotoid Cannons: " + artifactTypes["PHOTOIDCANNON"].toString())
   }
   if (message.content === '!Common') {
     var artifacts = await getArtifacts("COMMON");
     var notDestroyedArtifactCount = await logArtifactInfoForRarity("COMMON")
     var artifactTypes = await logArtifactInfoForRarityAndType("COMMON")
-    message.channel.send("There are " + artifacts.length.toString() + " Common artifacts discovered, " + notDestroyedArtifactCount.toString() + " of them are still not destroyed.\nBlack Domains: " + artifactTypes["BLACKDOMAIN"].toString() + "\nPlanetary Shields: " + artifactTypes["PLANETARYSHIELD"].toString() + "\nColossus: " + artifactTypes["COLOSSUS"].toString() + "\nPyramids: " + artifactTypes["PYRAMID"].toString() + "\nSpaceships: " + artifactTypes["SPACESHIP"].toString() + "\nWormholes: " + artifactTypes["WORMHOLE"].toString() + "\nBloom Filters: " + artifactTypes["BLOOMFILTER"].toString() + "\nPhotoid Cannons: " + artifactTypes["PHOTOIDCANNON"].toString())
+    var number = (notDestroyedArtifactCount / artifacts.length) * 100
+    console.log(number)
+    message.channel.send("There are " + artifacts.length.toString() + " Common artifacts discovered, " + notDestroyedArtifactCount.toString() + " (" + number.toFixed(2) +"%) of them are still not destroyed.\nBlack Domains: " + artifactTypes["BLACKDOMAIN"].toString() + "\nPlanetary Shields: " + artifactTypes["PLANETARYSHIELD"].toString() + "\nColossus: " + artifactTypes["COLOSSUS"].toString() + "\nPyramids: " + artifactTypes["PYRAMID"].toString() + "\nSpaceships: " + artifactTypes["SPACESHIP"].toString() + "\nWormholes: " + artifactTypes["WORMHOLE"].toString() + "\nBloom Filters: " + artifactTypes["BLOOMFILTER"].toString() + "\nPhotoid Cannons: " + artifactTypes["PHOTOIDCANNON"].toString())
   }
 });
 
