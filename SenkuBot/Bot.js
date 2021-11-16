@@ -46,31 +46,103 @@ async function getArtifacts(rarity) {
 	return artifacts;
 };
 
+function artifactTypeGetsDestroyed(type) {
+	return (type === "PHOTOIDCANNON" || type === "BLACKDOMAIN" || type === "BLOOMFILTER" || type === "PLANETARYSHIELD");
+}
+
+function artifactWasDestroyed(artifact) {
+	if (artifact.lastDeactivated === 0) return false;	
+	if (artifactTypeGetsDestroyed(artifact.artifactType)) return true;
+	return false;
+}
+
+async function logArtifactInfoForRarity(rarity) {
+	let artifacts = await getArtifacts(rarity);
+	let artifactTypes = {};
+	let destroyedArtifactTypes = {};
+	let destroyedArtifactCount = 0;
+	let notDestroyedArtifactCount = 0;
+	for (let a of artifacts) {
+		let type = a.artifactType;
+		
+		if (!artifactTypes[type]) artifactTypes[type] = 1;
+		else artifactTypes[type]++;
+		
+		if (artifactWasDestroyed(a)) {
+			destroyedArtifactCount++;
+			if (!destroyedArtifactTypes[type]) destroyedArtifactTypes[type] = 1;
+			else destroyedArtifactTypes[type]++;
+		} else notDestroyedArtifactCount++;
+		
+	}
+	console.log("artifactTypes", artifactTypes);
+	console.log("destroyedArtifactTypes", destroyedArtifactTypes);
+	console.log(artifacts.length+" artifacts, "+destroyedArtifactCount+" destroyed, "+notDestroyedArtifactCount+" not destroyed");
+  return notDestroyedArtifactCount;
+}
+
+async function logArtifactInfoForRarityAndType(rarity) {
+	let artifacts = await getArtifacts(rarity);
+	let artifactTypes = {};
+	let destroyedArtifactTypes = {};
+	let destroyedArtifactCount = 0;
+	let notDestroyedArtifactCount = 0;
+	for (let a of artifacts) {
+		let type = a.artifactType;
+		
+		if (!artifactTypes[type]) artifactTypes[type] = 1;
+		else artifactTypes[type]++;
+		
+		if (artifactWasDestroyed(a)) {
+			destroyedArtifactCount++;
+			if (!destroyedArtifactTypes[type]) destroyedArtifactTypes[type] = 1;
+			else destroyedArtifactTypes[type]++;
+		} else notDestroyedArtifactCount++;
+		
+	}
+	console.log("artifactTypes", artifactTypes);
+	console.log("destroyedArtifactTypes", destroyedArtifactTypes);
+	console.log(artifacts.length+" artifacts, "+destroyedArtifactCount+" destroyed, "+notDestroyedArtifactCount+" not destroyed");
+  return artifactTypes;
+}
+
 client.on('ready', () => {
   console.log(`Logged in as: ${client.user.tag}!`);
 });
 
 client.on("messageCreate", async message => {
+
+// Artifacts by type & Rarity
   if (message.content === '!Mythic') {
-      var artifacts = await getArtifacts("MYTHIC");
-      message.channel.send("There are " + artifacts.length.toString() + " Mythic artifacts.");
+    var artifacts = await getArtifacts("MYTHIC");
+    var notDestroyedArtifactCount = await logArtifactInfoForRarity("MYTHIC")
+    var artifactTypes = await logArtifactInfoForRarityAndType("MYTHIC")
+    message.channel.send("There are " + artifacts.length.toString() + " Mythic artifacts discovered, " + notDestroyedArtifactCount.toString() + " of them are still not destroyed.\nBlack Domains: " + artifactTypes["BLACKDOMAIN"].toString() + "\nPlanetary Shields: " + artifactTypes["PLANETARYSHIELD"].toString() + "\nColossus: " + artifactTypes["COLOSSUS"].toString() + "\nPyramids: " + artifactTypes["PYRAMID"].toString() + "\nSpaceships: " + artifactTypes["SPACESHIP"].toString() + "\nPhotoid Cannons: " + artifactTypes["PHOTOIDCANNON"].toString())
   }
   if (message.content === '!Legendary') {
     var artifacts = await getArtifacts("LEGENDARY");
-    message.channel.send("There are " + artifacts.length.toString() + " Legendary artifacts.");
+    var notDestroyedArtifactCount = await logArtifactInfoForRarity("LEGENDARY")
+    var artifactTypes = await logArtifactInfoForRarityAndType("LEGENDARY")
+    message.channel.send("There are " + artifacts.length.toString() + " Legendary artifacts discovered, " + notDestroyedArtifactCount.toString() + " of them are still not destroyed.\nBlack Domains: " + artifactTypes["BLACKDOMAIN"].toString() + "\nPlanetary Shields: " + artifactTypes["PLANETARYSHIELD"].toString() + "\nColossus: " + artifactTypes["COLOSSUS"].toString() + "\nPyramids: " + artifactTypes["PYRAMID"].toString() + "\nSpaceships: " + artifactTypes["SPACESHIP"].toString() + "\nWormholes: " + artifactTypes["WORMHOLE"].toString() + "\nBloom Filters: " + artifactTypes["BLOOMFILTER"].toString() + "\nPhotoid Cannons: " + artifactTypes["PHOTOIDCANNON"].toString())
   }
   if (message.content === '!Epic') {
     var artifacts = await getArtifacts("EPIC");
-    message.channel.send("There are " + artifacts.length.toString() + " Epic artifacts.");
+    var notDestroyedArtifactCount = await logArtifactInfoForRarity("EPIC")
+    var artifactTypes = await logArtifactInfoForRarityAndType("EPIC")
+    message.channel.send("There are " + artifacts.length.toString() + " Epic artifacts discovered, " + notDestroyedArtifactCount.toString() + " of them are still not destroyed.\nBlack Domains: " + artifactTypes["BLACKDOMAIN"].toString() + "\nPlanetary Shields: " + artifactTypes["PLANETARYSHIELD"].toString() + "\nColossus: " + artifactTypes["COLOSSUS"].toString() + "\nPyramids: " + artifactTypes["PYRAMID"].toString() + "\nSpaceships: " + artifactTypes["SPACESHIP"].toString() + "\nWormholes: " + artifactTypes["WORMHOLE"].toString() + "\nBloom Filters: " + artifactTypes["BLOOMFILTER"].toString() + "\nPhotoid Cannons: " + artifactTypes["PHOTOIDCANNON"].toString())
   }
   if (message.content === '!Rare') {
-  var artifacts = await getArtifacts("RARE");
-  message.channel.send("There are " + artifacts.length.toString() + " Rare artifacts.");
+    var artifacts = await getArtifacts("RARE");
+    var notDestroyedArtifactCount = await logArtifactInfoForRarity("RARE")
+    var artifactTypes = await logArtifactInfoForRarityAndType("RARE")
+    message.channel.send("There are " + artifacts.length.toString() + " Rare artifacts discovered, " + notDestroyedArtifactCount.toString() + " of them are still not destroyed.\nBlack Domains: " + artifactTypes["BLACKDOMAIN"].toString() + "\nPlanetary Shields: " + artifactTypes["PLANETARYSHIELD"].toString() + "\nColossus: " + artifactTypes["COLOSSUS"].toString() + "\nPyramids: " + artifactTypes["PYRAMID"].toString() + "\nSpaceships: " + artifactTypes["SPACESHIP"].toString() + "\nWormholes: " + artifactTypes["WORMHOLE"].toString() + "\nBloom Filters: " + artifactTypes["BLOOMFILTER"].toString() + "\nPhotoid Cannons: " + artifactTypes["PHOTOIDCANNON"].toString())
   }
   if (message.content === '!Common') {
     var artifacts = await getArtifacts("COMMON");
-    message.channel.send("There are " + artifacts.length.toString() + " Common artifacts.");
-}
+    var notDestroyedArtifactCount = await logArtifactInfoForRarity("COMMON")
+    var artifactTypes = await logArtifactInfoForRarityAndType("COMMON")
+    message.channel.send("There are " + artifacts.length.toString() + " Common artifacts discovered, " + notDestroyedArtifactCount.toString() + " of them are still not destroyed.\nBlack Domains: " + artifactTypes["BLACKDOMAIN"].toString() + "\nPlanetary Shields: " + artifactTypes["PLANETARYSHIELD"].toString() + "\nColossus: " + artifactTypes["COLOSSUS"].toString() + "\nPyramids: " + artifactTypes["PYRAMID"].toString() + "\nSpaceships: " + artifactTypes["SPACESHIP"].toString() + "\nWormholes: " + artifactTypes["WORMHOLE"].toString() + "\nBloom Filters: " + artifactTypes["BLOOMFILTER"].toString() + "\nPhotoid Cannons: " + artifactTypes["PHOTOIDCANNON"].toString())
+  }
 });
 
 client.login(token);
