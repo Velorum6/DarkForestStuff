@@ -22,7 +22,7 @@ function getArtifactQueryStr(rarity, lastId) {
 		artifacts(first: 1000, where: {rarity: ${rarity}, id_gt: "${lastId}"}) {
 			rarity
 			artifactType
-			lastDeactivated
+			lastDeactivated 
 			id
 			discoverer {id}
 		}
@@ -124,7 +124,6 @@ client.on("messageCreate", async message => {
       str += type + ": " + artifactTypes[type] + "\n";
     }
     var number = (notDestroyedArtifactCount / artifacts.length) * 100
-    console.log(number)
     message.channel.send("There are " + artifacts.length.toString() + " Legendary artifacts discovered, " + notDestroyedArtifactCount.toString() + " (" + number.toFixed(2) +"%) of them are still not destroyed.\n" + str)
   }
   if (message.content === '!Epic') {
@@ -136,7 +135,6 @@ client.on("messageCreate", async message => {
       str += type + ": " + artifactTypes[type] + "\n";
     }
     var number = (notDestroyedArtifactCount / artifacts.length) * 100
-    console.log(number)
     message.channel.send("There are " + artifacts.length.toString() + " Epic artifacts discovered, " + notDestroyedArtifactCount.toString() + " (" + number.toFixed(2)+"%) of them are still not destroyed.\n" + str )
   }
   if (message.content === '!Rare') {
@@ -148,7 +146,6 @@ client.on("messageCreate", async message => {
       str += type + ": " + artifactTypes[type] + "\n";
     }
     var number = (notDestroyedArtifactCount / artifacts.length) * 100
-    console.log(number)
     message.channel.send("There are " + artifacts.length.toString() + " Rare artifacts discovered, " + notDestroyedArtifactCount.toString() + " (" + number.toFixed(2) +"%) of them are still not destroyed.\n" + str)
   }
   if (message.content === '!Common') {
@@ -160,7 +157,6 @@ client.on("messageCreate", async message => {
       str += type + ": " + artifactTypes[type] + "\n";
     }
     var number = (notDestroyedArtifactCount / artifacts.length) * 100
-    console.log(number)
     message.channel.send("There are " + artifacts.length.toString() + " Common artifacts discovered, " + notDestroyedArtifactCount.toString() + " (" + number.toFixed(2) +"%) of them are still not destroyed.\n" + str)
   }
 });
