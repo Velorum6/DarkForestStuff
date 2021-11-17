@@ -96,7 +96,9 @@ async function logArtifactInfoForRarityAndType(rarity) {
 	}
   return artifactTypes;
 }
-
+var commands = [
+  "Mythic","Legendary","Epic","Rare","Common","help",
+]
 var artifactTypeNames = {
   "BLOOMFILTER": "Bloom Filter",
   "MONOLITH": "Monolith",
@@ -132,8 +134,14 @@ client.on("messageCreate", async message => {
           str += artifactTypeNames[type] + ": " + artifactTypes[type] + "\n";
         }
         var number = (notDestroyedArtifactCount / artifacts.length) * 100
-        message.channel.send("There are " + artifacts.length.toString() + " " + message.content.substr(1) + " artifacts discovered, " + notDestroyedArtifactCount.toString() + " (" + number.toFixed(2) +"%) of them are still not destroyed.\n" + str)
-      } else {
+        message.channel.send("There are " + artifacts.length.toString() + " " + message.content.substr(1) + " artifacts discovered, " + notDestroyedArtifactCount.toString() + " (" + number.toFixed(2) +"%) of them are still not destroyed.\n" + "```" + str + "```")
+      } else if (message.content === "!help"){
+        var str = "";
+        for (var i=0; i < commands.length; i++){
+          str += commands[i] + "\n"
+        }
+        message.channel.send("List of commands (Remember to add ! before writing the command)\n```" + str + "```")
+      } else if (message.content.length < 100){
         message.channel.send("ERROR: " + message.content + " is not a valid command")
       }
     }
