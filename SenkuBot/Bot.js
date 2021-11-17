@@ -97,68 +97,46 @@ async function logArtifactInfoForRarityAndType(rarity) {
   return artifactTypes;
 }
 
+var artifactTypeNames = {
+  "BLOOMFILTER": "Bloom Filter",
+  "MONOLITH": "Monolith",
+  "BLACKDOMAIN": "Black Domain",
+  "WORMHOLE": "Wormhole",
+  "COLOSSUS": "Colossus",
+  "PYRAMID": "Pyramid",
+  "SPACESHIP": "Spaceship",
+  "PHOTOIDCANNON": "Photoid Cannon",
+  "PLANETARYSHIELD": "Planetary Shield",
+}
+
+var artifactRarities = {
+  "MYTHIC": true,
+  "LEGENDARY": true,
+  "EPIC": true,
+  "RARE": true,
+  "COMMON": true,
+}
+
 client.on('ready', () => {
   console.log(`Logged in as: ${client.user.tag}!`);
 });
 
 client.on("messageCreate", async message => {
-
-// Artifacts by type & Rarity
-  if (message.content === '!Mythic') {
-    var artifacts = await getArtifacts("MYTHIC");
-    var notDestroyedArtifactCount = await logArtifactInfoForRarity("MYTHIC")
-    var artifactTypes = await logArtifactInfoForRarityAndType("MYTHIC")
-    var str = "";
-    for (var type in artifactTypes) {
-      str += type + ": " + artifactTypes[type] + "\n";
+  if (message.content.substr(0,1) === "!"){
+      if (artifactRarities[message.content.substr(1).toUpperCase()]){
+        var artifacts = await getArtifacts(message.content.substr(1).toUpperCase());
+        var notDestroyedArtifactCount = await logArtifactInfoForRarity(message.content.substr(1).toUpperCase())
+        var artifactTypes = await logArtifactInfoForRarityAndType(message.content.substr(1).toUpperCase())
+        var str = "";
+        for (var type in artifactTypes) {
+          str += artifactTypeNames[type] + ": " + artifactTypes[type] + "\n";
+        }
+        var number = (notDestroyedArtifactCount / artifacts.length) * 100
+        message.channel.send("There are " + artifacts.length.toString() + " " + message.content.substr(1) + " artifacts discovered, " + notDestroyedArtifactCount.toString() + " (" + number.toFixed(2) +"%) of them are still not destroyed.\n" + str)
+      } else {
+        message.channel.send("ERROR: " + message.content + " is not a valid command")
+      }
     }
-    var number = (notDestroyedArtifactCount / artifacts.length) * 100
-    message.channel.send("There are " + artifacts.length.toString() + " Mythic artifacts discovered, " + notDestroyedArtifactCount.toString() + " (" + number.toFixed(2) +"%) of them are still not destroyed.\n" + str)
-  }
-  if (message.content === '!Legendary') {
-    var artifacts = await getArtifacts("LEGENDARY");
-    var notDestroyedArtifactCount = await logArtifactInfoForRarity("LEGENDARY")
-    var artifactTypes = await logArtifactInfoForRarityAndType("LEGENDARY")
-    var str = "";
-    for (var type in artifactTypes) {
-      str += type + ": " + artifactTypes[type] + "\n";
-    }
-    var number = (notDestroyedArtifactCount / artifacts.length) * 100
-    message.channel.send("There are " + artifacts.length.toString() + " Legendary artifacts discovered, " + notDestroyedArtifactCount.toString() + " (" + number.toFixed(2) +"%) of them are still not destroyed.\n" + str)
-  }
-  if (message.content === '!Epic') {
-    var artifacts = await getArtifacts("EPIC");
-    var notDestroyedArtifactCount = await logArtifactInfoForRarity("EPIC")
-    var artifactTypes = await logArtifactInfoForRarityAndType("EPIC")
-    var str = "";
-    for (var type in artifactTypes) {
-      str += type + ": " + artifactTypes[type] + "\n";
-    }
-    var number = (notDestroyedArtifactCount / artifacts.length) * 100
-    message.channel.send("There are " + artifacts.length.toString() + " Epic artifacts discovered, " + notDestroyedArtifactCount.toString() + " (" + number.toFixed(2)+"%) of them are still not destroyed.\n" + str )
-  }
-  if (message.content === '!Rare') {
-    var artifacts = await getArtifacts("RARE");
-    var notDestroyedArtifactCount = await logArtifactInfoForRarity("RARE")
-    var artifactTypes = await logArtifactInfoForRarityAndType("RARE")
-    var str = "";
-    for (var type in artifactTypes) {
-      str += type + ": " + artifactTypes[type] + "\n";
-    }
-    var number = (notDestroyedArtifactCount / artifacts.length) * 100
-    message.channel.send("There are " + artifacts.length.toString() + " Rare artifacts discovered, " + notDestroyedArtifactCount.toString() + " (" + number.toFixed(2) +"%) of them are still not destroyed.\n" + str)
-  }
-  if (message.content === '!Common') {
-    var artifacts = await getArtifacts("COMMON");
-    var notDestroyedArtifactCount = await logArtifactInfoForRarity("COMMON")
-    var artifactTypes = await logArtifactInfoForRarityAndType("COMMON")
-    var str = "";
-    for (var type in artifactTypes) {
-      str += type + ": " + artifactTypes[type] + "\n";
-    }
-    var number = (notDestroyedArtifactCount / artifacts.length) * 100
-    message.channel.send("There are " + artifacts.length.toString() + " Common artifacts discovered, " + notDestroyedArtifactCount.toString() + " (" + number.toFixed(2) +"%) of them are still not destroyed.\n" + str)
-  }
 });
 
 client.login(token);
