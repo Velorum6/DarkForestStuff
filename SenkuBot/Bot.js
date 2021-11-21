@@ -75,6 +75,28 @@ async function logArtifactInfoForRarity(rarity) {
   return notDestroyedArtifactCount;
 }
 
+async function logArtifactInfoForDestroyed(rarity) {
+	let artifacts = await getArtifacts(rarity);
+	let artifactTypes = {};
+	let destroyedArtifactTypes = {};
+	let destroyedArtifactCount = 0;
+	let notDestroyedArtifactCount = 0;
+	for (let a of artifacts) {
+		let type = a.artifactType;
+		
+		if (!artifactTypes[type]) artifactTypes[type] = 1;
+		else artifactTypes[type]++;
+		
+		if (artifactWasDestroyed(a)) {
+			destroyedArtifactCount++;
+			if (!destroyedArtifactTypes[type]) destroyedArtifactTypes[type] = 1;
+			else destroyedArtifactTypes[type]++;
+		} else notDestroyedArtifactCount++;
+		
+	}
+  return destroyedArtifactTypes;
+}
+
 async function logArtifactInfoForRarityAndType(rarity) {
 	let artifacts = await getArtifacts(rarity);
 	let artifactTypes = {};
@@ -96,9 +118,11 @@ async function logArtifactInfoForRarityAndType(rarity) {
 	}
   return artifactTypes;
 }
+
 var commands = [
   "Mythic","Legendary","Epic","Rare","Common","help",
 ]
+
 var artifactTypeNames = {
   "BLOOMFILTER": "Bloom Filter",
   "MONOLITH": "Monolith",
@@ -124,23 +148,25 @@ client.on('ready', () => {
 });
 
 client.on("messageCreate", async message => {
+
   if (message.content.substr(0,1) === "!"){
       if (artifactRarities[message.content.substr(1).toUpperCase()]){
         var artifacts = await getArtifacts(message.content.substr(1).toUpperCase());
         var notDestroyedArtifactCount = await logArtifactInfoForRarity(message.content.substr(1).toUpperCase())
         var artifactTypes = await logArtifactInfoForRarityAndType(message.content.substr(1).toUpperCase())
+		var destroyedArtifactTypes = await logArtifactInfoForDestroyed(message.content.substr(1).toUpperCase())
         var str = "";
         for (var type in artifactTypes) {
-          str += artifactTypeNames[type] + ": " + artifactTypes[type] + "\n";
-        }
+			if (destroyedArtifactTypes[type] === undefined){
+				str += artifactTypeNames[type] + ": " + artifactTypes[type] + "\n";
+			} else {
+          		str += artifactTypeNames[type] + ": " + artifactTypes[type] + " (-" + destroyedArtifactTypes[type] + ")\n";
+			}
+		}
         var number = (notDestroyedArtifactCount / artifacts.length) * 100
         message.channel.send("There are " + artifacts.length.toString() + " " + message.content.substr(1) + " artifacts discovered, " + notDestroyedArtifactCount.toString() + " (" + number.toFixed(2) +"%) of them are still not destroyed.\n" + "```" + str + "```")
       } else if (message.content === "!help"){
-        var str = "";
-        for (var i=0; i < commands.length; i++){
-          str += commands[i] + "\n"
-        }
-        message.channel.send("List of commands (Remember to add ! before writing the command)\n```" + str + "```")
+        message.channel.send("List of commands (Remember to add ! before writing the command)\n```\n" + commands.join("\n") + "```")
       } else if (message.content.length < 100){
         message.channel.send("ERROR: " + message.content + " is not a valid command")
       }
