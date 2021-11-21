@@ -154,7 +154,7 @@ client.on("messageCreate", async message => {
         var artifacts = await getArtifacts(message.content.substr(1).toUpperCase());
         var notDestroyedArtifactCount = await logArtifactInfoForRarity(message.content.substr(1).toUpperCase())
         var artifactTypes = await logArtifactInfoForRarityAndType(message.content.substr(1).toUpperCase())
-		var destroyedArtifactTypes = await logArtifactInfoForDestroyed(message.content.substr(1).toUpperCase())
+	var destroyedArtifactTypes = await logArtifactInfoForDestroyed(message.content.substr(1).toUpperCase())
         var str = "";
         for (var type in artifactTypes) {
 			if (destroyedArtifactTypes[type] === undefined){
