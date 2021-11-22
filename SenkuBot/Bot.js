@@ -128,7 +128,7 @@ client.on("messageCreate", async message => {
 			}
 		}
         var number = (artifactInfo.notDestroyedArtifactCount / artifactInfo.artifacts.length) * 100
-        message.channel.send("There are " + artifactInfo.artifacts.length.toString() + " " + message.content.substr(1) + " artifacts discovered, " + artifactInfo.notDestroyedArtifactCount.toString() + " (" + number.toFixed(2) +"%) of them are still not destroyed.\n" + "```" + str + "```")
+        message.channel.send("There are " + artifactInfo.artifacts.length.toString() + " " + message.content.substr(7) + " artifacts discovered, " + artifactInfo.notDestroyedArtifactCount.toString() + " (" + number.toFixed(2) +"%) of them are still not destroyed.\n" + "```" + str + "```")
       } else if (message.content.toUpperCase() === "!SENKU" || message.content.toUpperCase() === "!SENKU COMMANDS" ){
         message.channel.send("List of commands (Remember to add `!senku ` before writing the command)\n```\n" + commands.join("\n") + "```")
       } else if (message.content.length < 100 && !commands.includes(message.content.substr(1))){
