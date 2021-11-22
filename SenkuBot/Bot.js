@@ -111,7 +111,7 @@ client.on("messageCreate", async message => {
 
   if (message.content.substr(0,1) === "!"){
       if (artifactRarities[message.content.substr(1).toUpperCase()]){
-		var artifactInfo = await getArtifactInfoForRarityAndType(message.content.substr(1).toUpperCase())
+	var artifactInfo = await getArtifactInfoForRarityAndType(message.content.substr(1).toUpperCase())
         var str = "";
 		for (var type in artifactInfo.artifactTypes) {
 			if (artifactInfo.destroyedArtifactTypes[type] === undefined){
