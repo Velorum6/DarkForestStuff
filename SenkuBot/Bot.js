@@ -53,7 +53,7 @@ function artifactWasDestroyed(artifact) {
 	return false;
 }
 
-async function logArtifactInfoForRarity(rarity) {
+async function getArtifactInfoForRarityAndType(rarity) {
 	let artifacts = await getArtifacts(rarity);
 	let artifactTypes = {};
 	let destroyedArtifactTypes = {};
@@ -72,55 +72,15 @@ async function logArtifactInfoForRarity(rarity) {
 		} else notDestroyedArtifactCount++;
 		
 	}
-  return notDestroyedArtifactCount;
-}
-
-async function logArtifactInfoForDestroyed(rarity) {
-	let artifacts = await getArtifacts(rarity);
-	let artifactTypes = {};
-	let destroyedArtifactTypes = {};
-	let destroyedArtifactCount = 0;
-	let notDestroyedArtifactCount = 0;
-	for (let a of artifacts) {
-		let type = a.artifactType;
-		
-		if (!artifactTypes[type]) artifactTypes[type] = 1;
-		else artifactTypes[type]++;
-		
-		if (artifactWasDestroyed(a)) {
-			destroyedArtifactCount++;
-			if (!destroyedArtifactTypes[type]) destroyedArtifactTypes[type] = 1;
-			else destroyedArtifactTypes[type]++;
-		} else notDestroyedArtifactCount++;
-		
-	}
-  return destroyedArtifactTypes;
-}
-
-async function logArtifactInfoForRarityAndType(rarity) {
-	let artifacts = await getArtifacts(rarity);
-	let artifactTypes = {};
-	let destroyedArtifactTypes = {};
-	let destroyedArtifactCount = 0;
-	let notDestroyedArtifactCount = 0;
-	for (let a of artifacts) {
-		let type = a.artifactType;
-		
-		if (!artifactTypes[type]) artifactTypes[type] = 1;
-		else artifactTypes[type]++;
-		
-		if (artifactWasDestroyed(a)) {
-			destroyedArtifactCount++;
-			if (!destroyedArtifactTypes[type]) destroyedArtifactTypes[type] = 1;
-			else destroyedArtifactTypes[type]++;
-		} else notDestroyedArtifactCount++;
-		
-	}
-  return artifactTypes;
-}
+  return {
+	  "notDestroyedArtifactCount": notDestroyedArtifactCount,
+	  "destroyedArtifactTypes": destroyedArtifactTypes,
+	  "artifactTypes": artifactTypes,
+	  "artifacts": artifacts,
+}}
 
 var commands = [
-  "Mythic","Legendary","Epic","Rare","Common","help",
+  "Mythic","Legendary","Epic","Rare","Common","help","testing"
 ]
 
 var artifactTypeNames = {
@@ -151,25 +111,22 @@ client.on("messageCreate", async message => {
 
   if (message.content.substr(0,1) === "!"){
       if (artifactRarities[message.content.substr(1).toUpperCase()]){
-        var artifacts = await getArtifacts(message.content.substr(1).toUpperCase());
-        var notDestroyedArtifactCount = await logArtifactInfoForRarity(message.content.substr(1).toUpperCase())
-        var artifactTypes = await logArtifactInfoForRarityAndType(message.content.substr(1).toUpperCase())
-	var destroyedArtifactTypes = await logArtifactInfoForDestroyed(message.content.substr(1).toUpperCase())
+		var artifactInfo = await getArtifactInfoForRarityAndType(message.content.substr(1).toUpperCase())
         var str = "";
-        for (var type in artifactTypes) {
-			if (destroyedArtifactTypes[type] === undefined){
-				str += artifactTypeNames[type] + ": " + artifactTypes[type] + "\n";
+		for (var type in artifactInfo.artifactTypes) {
+			if (artifactInfo.destroyedArtifactTypes[type] === undefined){
+				str += artifactTypeNames[type] + ": " + artifactInfo.artifactTypes[type] + "\n";
 			} else {
-          		str += artifactTypeNames[type] + ": " + artifactTypes[type] + " (-" + destroyedArtifactTypes[type] + ")\n";
+          		str += artifactTypeNames[type] + ": " + artifactInfo.artifactTypes[type] + " (-" + artifactInfo.destroyedArtifactTypes[type] + ")\n";
 			}
 		}
-        var number = (notDestroyedArtifactCount / artifacts.length) * 100
-        message.channel.send("There are " + artifacts.length.toString() + " " + message.content.substr(1) + " artifacts discovered, " + notDestroyedArtifactCount.toString() + " (" + number.toFixed(2) +"%) of them are still not destroyed.\n" + "```" + str + "```")
+        var number = (artifactInfo.notDestroyedArtifactCount / artifactInfo.artifacts.length) * 100
+        message.channel.send("There are " + artifactInfo.artifacts.length.toString() + " " + message.content.substr(1) + " artifacts discovered, " + artifactInfo.notDestroyedArtifactCount.toString() + " (" + number.toFixed(2) +"%) of them are still not destroyed.\n" + "```" + str + "```")
       } else if (message.content === "!help"){
         message.channel.send("List of commands (Remember to add ! before writing the command)\n```\n" + commands.join("\n") + "```")
-      } else if (message.content.length < 100){
+      } else if (message.content.length < 100 && !commands.includes(message.content.substr(1))){
         message.channel.send("ERROR: " + message.content + " is not a valid command")
-      }
+	  }
     }
 });
 
