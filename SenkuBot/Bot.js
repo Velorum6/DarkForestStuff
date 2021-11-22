@@ -5,6 +5,7 @@ import fetch from 'node-fetch';
 var GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/darkforest-eth/dark-forest-v06-round-4";
 
 async function getGraphQLData(graphApiUrl, query) {
+	console.log("downloading data...")
 	const response = await fetch(graphApiUrl, {
 		method: "POST",
 		body: JSON.stringify({ query }),
@@ -14,6 +15,7 @@ async function getGraphQLData(graphApiUrl, query) {
 		}
 	});
 	const json = await response.json();
+	console.log("Download complete!")
 	return json;
 };
 
@@ -80,7 +82,7 @@ async function getArtifactInfoForRarityAndType(rarity) {
 }}
 
 var commands = [
-  "Mythic","Legendary","Epic","Rare","Common","help","testing"
+  "Mythic","Legendary","Epic","Rare","Common","Commands"
 ]
 
 var artifactTypeNames = {
@@ -103,15 +105,20 @@ var artifactRarities = {
   "COMMON": true,
 }
 
+client.on('error', (code, msg) => {
+	console.log("ERROR code: "+code+", msg: "+msg);
+  });
+
 client.on('ready', () => {
   console.log(`Logged in as: ${client.user.tag}!`);
 });
 
 client.on("messageCreate", async message => {
 
-  if (message.content.substr(0,1) === "!"){
-      if (artifactRarities[message.content.substr(1).toUpperCase()]){
-	var artifactInfo = await getArtifactInfoForRarityAndType(message.content.substr(1).toUpperCase())
+  if (message.content.substr(0,6).toUpperCase() === "!SENKU"){
+	  console.log(message.content.substr(7).toUpperCase())
+      if (artifactRarities[message.content.substr(7).toUpperCase()]){
+		var artifactInfo = await getArtifactInfoForRarityAndType(message.content.substr(7).toUpperCase())
         var str = "";
 		for (var type in artifactInfo.artifactTypes) {
 			if (artifactInfo.destroyedArtifactTypes[type] === undefined){
@@ -122,8 +129,8 @@ client.on("messageCreate", async message => {
 		}
         var number = (artifactInfo.notDestroyedArtifactCount / artifactInfo.artifacts.length) * 100
         message.channel.send("There are " + artifactInfo.artifacts.length.toString() + " " + message.content.substr(1) + " artifacts discovered, " + artifactInfo.notDestroyedArtifactCount.toString() + " (" + number.toFixed(2) +"%) of them are still not destroyed.\n" + "```" + str + "```")
-      } else if (message.content === "!help"){
-        message.channel.send("List of commands (Remember to add ! before writing the command)\n```\n" + commands.join("\n") + "```")
+      } else if (message.content.toUpperCase() === "!SENKU COMMANDS"){
+        message.channel.send("List of commands (Remember to add `!senku ` before writing the command)\n```\n" + commands.join("\n") + "```")
       } else if (message.content.length < 100 && !commands.includes(message.content.substr(1))){
         message.channel.send("ERROR: " + message.content + " is not a valid command")
 	  }
